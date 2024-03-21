@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using WebApiAutores.Controllers;
+using WebApiAutores.Servicios;
 
 namespace WebApiAutores
 {
@@ -14,6 +16,7 @@ namespace WebApiAutores
 
         public void ConfigureServices (IServiceCollection services)
         {
+
             services.AddControllers().AddJsonOptions(x=>
             x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
