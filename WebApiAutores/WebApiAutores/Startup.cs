@@ -20,8 +20,18 @@ namespace WebApiAutores
             services.AddControllers().AddJsonOptions(x=>
             x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
-           services.AddDbContext<ApplicationDbContext>(options => 
-           options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
+            services.AddDbContext<ApplicationDbContext>(options => 
+            options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
+
+            //Ejemplo de servicios ASP.Net Core
+
+            services.AddTransient<IServicio, ServicioA>();
+            //services.AddTransient<ServicioA>();
+            //services.AddScoped<IServicio, ServicioA>();
+            //services.AddSingleton<IServicio, ServicioA>();
+            services.AddTransient<ServicioTransient>();
+            services.AddScoped<ServicioScoped>();
+            services.AddSingleton<ServicioSingleton>();
 
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
