@@ -32,6 +32,8 @@ namespace WebApiAutores.Controllers
         //Ejemplo de servicios ASP.Net Core
 
         [HttpGet("GUID")]
+        //Esta respuesta se va a guardar en memoria durtante 10 segundos
+        [ResponseCache(Duration = 10)]
         public ActionResult ObtenerGuids()
         {
             return Ok(new {

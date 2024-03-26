@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using WebApiAutores.Controllers;
 using WebApiAutores.Middlewares;
@@ -33,6 +34,11 @@ namespace WebApiAutores
             services.AddTransient<ServicioTransient>();
             services.AddScoped<ServicioScoped>();
             services.AddSingleton<ServicioSingleton>();
+            //Servicio de cache
+            services.AddResponseCaching();
+
+            // Agregando autentificación
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
 
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
@@ -66,7 +72,10 @@ namespace WebApiAutores
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            //Utilizacion del filtro de cache
+            app.UseResponseCaching();
 
+            // Agregando filtro de autorización
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { 
