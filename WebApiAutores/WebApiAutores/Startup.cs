@@ -42,6 +42,9 @@ namespace WebApiAutores
             //Agregando filtro personalizado
             services.AddTransient<MiFiltroDeAccion>();
 
+            //Agregado hosted
+            services.AddHostedService<EscribirEnArchivo>();
+
 
             //Servicio de cache
             services.AddResponseCaching();

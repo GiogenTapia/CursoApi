@@ -40,6 +40,7 @@ namespace WebApiAutores.Controllers
         [ServiceFilter(typeof(MiFiltroDeAccion))]
         public ActionResult ObtenerGuids()
         {
+
             return Ok(new {
                 AutoresControllerTransient = servicioTransient.Guid,
                 ServicioA_Transient = servicio.ObtenerTransient(),
@@ -58,6 +59,10 @@ namespace WebApiAutores.Controllers
         [Authorize] // Agregado de autorización, se puede poner a nivel global
         public async Task<ActionResult<List<Autor>>> Get()
         {
+             // Lanzamos un error para nuestro filtro global que
+             // hicimos de excepciones
+
+           // throw new NotImplementedException();
             logger.LogInformation("Estamnos obteniendo los autores");
             logger.LogWarning("Esto es un mensaje de prueba");
             return await context.Autores.Include(x => x.Libros).ToListAsync();
