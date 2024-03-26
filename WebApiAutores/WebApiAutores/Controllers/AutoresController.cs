@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApiAutores.Entidades;
+using WebApiAutores.Filtros;
 using WebApiAutores.Servicios;
 
 namespace WebApiAutores.Controllers
@@ -34,6 +36,8 @@ namespace WebApiAutores.Controllers
         [HttpGet("GUID")]
         //Esta respuesta se va a guardar en memoria durtante 10 segundos
         [ResponseCache(Duration = 10)]
+        // Agregando nuestro filtro personalizado
+        [ServiceFilter(typeof(MiFiltroDeAccion))]
         public ActionResult ObtenerGuids()
         {
             return Ok(new {
@@ -51,6 +55,7 @@ namespace WebApiAutores.Controllers
         [HttpGet] // api/autores
         [HttpGet("listado")] //  api/autores/listado
         [HttpGet("/listado")]// /listado
+        [Authorize] // Agregado de autorización, se puede poner a nivel global
         public async Task<ActionResult<List<Autor>>> Get()
         {
             logger.LogInformation("Estamnos obteniendo los autores");
