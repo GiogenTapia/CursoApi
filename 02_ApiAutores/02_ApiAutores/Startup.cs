@@ -34,6 +34,7 @@ namespace _02_ApiAutores
 
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
+            services.AddAutoMapper(typeof(Startup));
         }
 
 

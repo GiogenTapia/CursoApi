@@ -34,7 +34,7 @@ namespace _02_ApiAutores.Controllers
             }
 
             context.Add(libro);
-            context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             return Ok();
         }
 

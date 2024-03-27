@@ -1,5 +1,7 @@
-﻿using _02_ApiAutores.Entidades;
+﻿using _02_ApiAutores.DTOs;
+using _02_ApiAutores.Entidades;
 using _02_ApiAutores.Filtros;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,12 +14,12 @@ namespace _02_ApiAutores.Controllers
     public class AutoresController : ControllerBase
     {
         private readonly ApplicationDbContext context;
+        private readonly IMapper mapper;
 
-
-        public AutoresController(ApplicationDbContext context)
+        public AutoresController(ApplicationDbContext context, IMapper mapper)
         {
             this.context = context;
-
+            this.mapper = mapper;
         }
 
 
@@ -57,16 +59,22 @@ namespace _02_ApiAutores.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] Autor autor)
+        public async Task<ActionResult> Post([FromBody] AutorCreacionDTO autorCreacionDTO)
         {
-            var existeAutorNombre = await context.Autores.AnyAsync(x => x.Nombre == autor.Nombre);
+            var existeAutorNombre = await context.Autores.AnyAsync(x => x.Nombre == autorCreacionDTO.Nombre);
 
             if (existeAutorNombre)
             {
-                return BadRequest($"Ya existe un autor con el nombre {autor.Nombre}");
+                return BadRequest($"Ya existe un autor con el nombre {autorCreacionDTO.Nombre}");
             }
 
+            //Mapeamos nuestra entidad con el valor a recibir
+            var autor = mapper.Map<Autor>(autorCreacionDTO);
+
+
+            //Con la funcion add se marca el dato en la base de datos
             context.Add(autor);
+            //Los cambios marcados se registran en la base de datos
             await context.SaveChangesAsync();
             return Ok();
         }
