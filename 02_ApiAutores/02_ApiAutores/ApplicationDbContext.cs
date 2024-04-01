@@ -13,5 +13,6 @@ namespace _02_ApiAutores
         //Nombre de la tabla a crear
         public DbSet<Autor> Autores { get; set; }
         public DbSet<Libro> Libros { get; set; }
+        public DbSet<Comentario> Comentarios { get; set; }
     }
 }
