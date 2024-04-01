@@ -8,7 +8,13 @@ namespace _02_ApiAutores.Utilidades
     {
         public AutoMapperProfiles()
         {
+            //Aqui es primero el DTO porque es del cliente al servidor
             CreateMap<AutorCreacionDTO, Autor>();
+            //Aqui porque es del servidor al cliente
+            CreateMap<Autor, AutorDTO>();  
+
+            CreateMap<LibroCreacionDTO, Libro>();
+            CreateMap<Libro, LibroDTO>();
         }
     }
 }

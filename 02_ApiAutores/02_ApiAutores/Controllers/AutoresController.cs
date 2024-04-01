@@ -24,38 +24,42 @@ namespace _02_ApiAutores.Controllers
 
 
 
-        //[HttpGet] // api/autores
-        //public async Task<ActionResult<List<Autor>>> Get()
-        //{
-        //    return await context.Autores.Include(x => x.Libros).ToListAsync();
-        //}
-
-        //// Para mandar datos en nuestos endpoints ponemos entre {}
-        //[HttpGet("{id:int}")]
-        //public async Task<ActionResult<Autor>> Get(int id)
-        //{
-        //    var autor = await context.Autores.FirstOrDefaultAsync(x => x.Id == id);
-            
-        //    if (autor == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return autor;
-        //}
-
-
-        [HttpGet("{nombre}")]
-        public async Task<ActionResult<Autor>> Get([FromRoute] string nombre)
+        [HttpGet] // api/autores
+        public async Task<ActionResult<List<AutorDTO>>> Get()
         {
-            var autor = await context.Autores.FirstOrDefaultAsync(x => x.Nombre.Contains(nombre));
+            //Se coloca en un listado con el ToListAsync
+            var autores = await context.Autores.ToListAsync();
+            return mapper.Map<List<AutorDTO>>(autores);
+        }
+
+        // Para mandar datos en nuestos endpoints ponemos entre {}
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<AutorDTO>> Get(int id)
+        {
+            //Obtener un solo registro, se buscara por su Id
+            var autor = await context.Autores.FirstOrDefaultAsync(autorBD => autorBD.Id == id);
 
             if (autor == null)
             {
                 return NotFound();
             }
 
-            return Ok(autor);
+            return mapper.Map<AutorDTO>(autor);
+        }
+
+
+        [HttpGet("{nombre}")]
+        public async Task<ActionResult<List<AutorDTO>>> Get([FromRoute] string nombre)
+        {
+            //Se obtiene un solo dato a buscar con el nombre recibido
+            //var autor = await context.Autores.FirstOrDefaultAsync(autorBD => autorBD.Nombre.Contains(nombre));
+            
+            //Se obtiene todos los usuarios que coincidan con ese nombre
+            //Aqui se utilizan clausulas de filtros.
+            var autores = await context.Autores.Where(autorBD => autorBD.Nombre.Contains(nombre)).ToListAsync();
+
+
+            return mapper.Map<List<AutorDTO>>(autores);
         }
 
         [HttpPost]
