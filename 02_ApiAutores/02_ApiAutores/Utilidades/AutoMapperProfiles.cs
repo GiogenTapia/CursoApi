@@ -43,6 +43,7 @@ namespace _02_ApiAutores.Utilidades
 
         //Mapeo especial para mostrar el id y el nombre del autor en nuestro LibroDTO
         //Obtendiendolo de AutorDTO
+        //Estos son mapeos especiales
         private List<AutorDTO> MapLibroDTOAutores(Libro libro, LibroDTO libroDTO)
         {
             var resultado = new List<AutorDTO>();
