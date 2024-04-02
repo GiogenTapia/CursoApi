@@ -24,8 +24,17 @@ namespace _02_ApiAutores.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<LibroDTO>> Get(int id)
         {
+            //Esto es por si queremos mandar los comentarios, pero se ignora para 
+            //que el usuario no consuma muchos datos
             // var libro =  await context.Libros.Include(libroBD => libroBD.Comentarios).FirstOrDefaultAsync(x => x.Id == id);
-            var libro = await context.Libros.FirstOrDefaultAsync(x => x.Id == id);
+            
+            
+            var libro = await context.Libros
+                .Include(libroDB => libroDB.AutoresLibros)
+                .ThenInclude(autorLibroDB => autorLibroDB.Autor)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            libro.AutoresLibros = libro.AutoresLibros.OrderBy(x => x.Orden).ToList();
             return mapper.Map<LibroDTO>(libro);
         }
 
