@@ -22,7 +22,7 @@ namespace _02_ApiAutores.Controllers
 
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<LibroDTO>> Get(int id)
+        public async Task<ActionResult<LibroDTOAutores>> Get(int id)
         {
             //Esto es por si queremos mandar los comentarios, pero se ignora para 
             //que el usuario no consuma muchos datos
@@ -35,7 +35,7 @@ namespace _02_ApiAutores.Controllers
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             libro.AutoresLibros = libro.AutoresLibros.OrderBy(x => x.Orden).ToList();
-            return mapper.Map<LibroDTO>(libro);
+            return mapper.Map<LibroDTOAutores>(libro);
         }
 
         [HttpPost]

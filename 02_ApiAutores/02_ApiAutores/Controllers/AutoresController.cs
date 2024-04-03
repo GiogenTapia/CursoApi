@@ -34,17 +34,20 @@ namespace _02_ApiAutores.Controllers
 
         // Para mandar datos en nuestos endpoints ponemos entre {}
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<AutorDTO>> Get(int id)
+        public async Task<ActionResult<AutorDTOLibros>> Get(int id)
         {
             //Obtener un solo registro, se buscara por su Id
-            var autor = await context.Autores.FirstOrDefaultAsync(autorBD => autorBD.Id == id);
+            var autor = await context.Autores
+                .Include(autorBD => autorBD.AutoresLibros)
+                .ThenInclude(autorlibroBD => autorlibroBD.Libro)
+                .FirstOrDefaultAsync(autorBD => autorBD.Id == id);
 
             if (autor == null)
             {
                 return NotFound();
             }
 
-            return mapper.Map<AutorDTO>(autor);
+            return mapper.Map<AutorDTOLibros>(autor);
         }
 
 
@@ -80,7 +83,8 @@ namespace _02_ApiAutores.Controllers
             context.Add(autor);
             //Los cambios marcados se registran en la base de datos
             await context.SaveChangesAsync();
-            return Ok();
+
+            return CreatedAtRoute();
         }
 
 

@@ -11,15 +11,19 @@ namespace _02_ApiAutores.Utilidades
             //Aqui es primero el DTO porque es del cliente al servidor
             CreateMap<AutorCreacionDTO, Autor>();
             //Aqui porque es del servidor al cliente
-            CreateMap<Autor, AutorDTO>();  
+            CreateMap<Autor, AutorDTO>();
+            CreateMap<Autor, AutorDTOLibros>()
+                .ForMember(autorDTO => autorDTO.Libros, opciones => opciones.MapFrom(MapAutorDTOLibros));
+            
+
 
             //Mapeo especial, de listado de AutoresId de LibroCreacionDTO
             //con el listado de AutoresLIbros de la entidad Libro
             CreateMap<LibroCreacionDTO, Libro>()
                 .ForMember(libro=> libro.AutoresLibros, opciones => opciones.MapFrom(MapAutoresLibros));
-            
 
-            CreateMap<Libro, LibroDTO>()
+            CreateMap<Libro, LibroDTO>();
+            CreateMap<Libro, LibroDTOAutores>()
                 .ForMember(libroDTO=> libroDTO.Autores, opciones=> opciones.MapFrom(MapLibroDTOAutores));
 
             CreateMap<ComentarioCreacionDTO, Comentario>(); 
@@ -58,5 +62,23 @@ namespace _02_ApiAutores.Utilidades
             }
             return resultado;
         }
+
+        private List<LibroDTO> MapAutorDTOLibros(Autor autor, AutorDTO autorDTO)
+        {
+            var resultado = new List<LibroDTO>();
+            if (autor.AutoresLibros == null) { return resultado; }
+            foreach (var autorLibro in autor.AutoresLibros)
+            {
+                resultado.Add(new LibroDTO()
+                {
+                    Id = autorLibro.LibroId,
+                    Titulo = autorLibro.Libro.Titulo
+
+                });
+            }
+            return resultado;
+        }
+
+
     }
 }
