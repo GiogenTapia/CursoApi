@@ -21,14 +21,14 @@ namespace _02_ApiAutores.Controllers
         }
 
 
-        [HttpGet("{id:int}",Name = "ObtenerLibro")]
+        [HttpGet("{id:int}", Name = "ObtenerLibro")]
         public async Task<ActionResult<LibroDTOAutores>> Get(int id)
         {
             //Esto es por si queremos mandar los comentarios, pero se ignora para 
             //que el usuario no consuma muchos datos
             // var libro =  await context.Libros.Include(libroBD => libroBD.Comentarios).FirstOrDefaultAsync(x => x.Id == id);
-            
-            
+
+
             var libro = await context.Libros
                 .Include(libroDB => libroDB.AutoresLibros)
                 .ThenInclude(autorLibroDB => autorLibroDB.Autor)
@@ -47,14 +47,48 @@ namespace _02_ApiAutores.Controllers
             }
 
             var autoresIds = await context.Autores.Where(autorBD => libroCreacionDTO.AutoresIds.Contains(autorBD.Id)).
-                Select(x=> x.Id).ToListAsync();
+                Select(x => x.Id).ToListAsync();
             if (libroCreacionDTO.AutoresIds.Count != autoresIds.Count)
             {
                 return BadRequest("No existe uno de los autores enviados.");
             }
 
             var libro = mapper.Map<Libro>(libroCreacionDTO);
+            AsignarOrdenAutores(libro);
 
+
+            context.Add(libro);
+            await context.SaveChangesAsync();
+
+            var libroDTO = mapper.Map<LibroDTO>(libro);
+            return CreatedAtRoute("ObtenerLibro", new { id = libro.Id }, libroDTO);
+        }
+
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> Put(int id, LibroCreacionDTO libroCreacionDTO)
+        {
+
+            //se guarda en memoria el registro
+            //aqui lo que se hace es incluir al igual los autoreslibros
+            //despues obener el libro con el mismo id a actualizar
+            var libroDB = await context.Libros
+                .Include(x=> x.AutoresLibros)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (libroDB == null)
+            {
+                return NotFound();
+            }
+
+            //lo reasignamos con el mapper para crear su tipo
+            libroDB = mapper.Map(libroCreacionDTO, libroDB);
+            AsignarOrdenAutores(libroDB);
+            await context.SaveChangesAsync();
+            return NoContent();
+        }
+
+        private void AsignarOrdenAutores(Libro libro)
+        {
             if (libro.AutoresLibros != null)
             {
                 for (int i = 0; i < libro.AutoresLibros.Count; i++)
@@ -63,12 +97,6 @@ namespace _02_ApiAutores.Controllers
                 }
 
             }
-
-            context.Add(libro);
-            await context.SaveChangesAsync();
-
-            var libroDTO = mapper.Map<LibroDTO>(libro);
-            return CreatedAtRoute("ObtenerLibro", new {id = libro.Id}, libroDTO);
         }
 
     }
