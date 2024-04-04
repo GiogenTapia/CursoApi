@@ -3,12 +3,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace _02_ApiAutores.DTOs
 {
-    public class LibroDTO
+    public class LibroPatchDTO
     {
-        public int Id { get; set; }
+        [PrimeraLetraMayuscula]
+        [StringLength(maximumLength: 250)]
+        [Required]
         public string Titulo { get; set; }
         public DateTime FechaPublicacion { get; set; }
-
-        //public List<ComentarioDTO> Comentarios { get; set; }
     }
 }

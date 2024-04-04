@@ -26,8 +26,13 @@ namespace _02_ApiAutores.Utilidades
             CreateMap<Libro, LibroDTOAutores>()
                 .ForMember(libroDTO=> libroDTO.Autores, opciones=> opciones.MapFrom(MapLibroDTOAutores));
 
+            //Aqui se hace entre ambos
+            CreateMap<LibroPatchDTO, Libro>().ReverseMap();
+
             CreateMap<ComentarioCreacionDTO, Comentario>(); 
             CreateMap<Comentario, ComentarioDTO>();
+
+
         }
 
         //Funcion para mapear un entero entre los AutoresLibros

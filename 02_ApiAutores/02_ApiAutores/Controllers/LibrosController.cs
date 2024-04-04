@@ -1,6 +1,7 @@
 ﻿using _02_ApiAutores.DTOs;
 using _02_ApiAutores.Entidades;
 using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -97,6 +98,43 @@ namespace _02_ApiAutores.Controllers
                 }
 
             }
+        }
+
+
+        //El patch nos ayuda a actualizar datos en especifico sin poner toda la entidad
+        //para ello recuerda instalar el nuget de newtonsoft y agregarlo a startup
+        [HttpPatch("{id:int}")]
+        public async Task<ActionResult> Patch(int id, JsonPatchDocument<LibroPatchDTO> patchDocument)
+        {
+            if (patchDocument == null)
+            {
+                return BadRequest();
+            }
+
+            var libroBD = await context.Libros.FirstOrDefaultAsync(libroBD => libroBD.Id == id);
+            
+            if (libroBD == null)
+            {
+                return NotFound();
+            }
+
+            var libroDTO = mapper.Map<LibroPatchDTO>(libroBD);
+
+            patchDocument.ApplyTo(libroDTO, ModelState);
+
+            var esValido = TryValidateModel(libroDTO);
+
+            if (!esValido)
+            {
+                return BadRequest(ModelState);
+            }
+
+            mapper.Map(libroDTO, libroBD);
+
+            await context.SaveChangesAsync();
+
+            return NoContent();
+
         }
 
     }
