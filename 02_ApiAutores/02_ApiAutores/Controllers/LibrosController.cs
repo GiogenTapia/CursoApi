@@ -21,7 +21,7 @@ namespace _02_ApiAutores.Controllers
         }
 
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}",Name = "ObtenerLibro")]
         public async Task<ActionResult<LibroDTOAutores>> Get(int id)
         {
             //Esto es por si queremos mandar los comentarios, pero se ignora para 
@@ -66,7 +66,9 @@ namespace _02_ApiAutores.Controllers
 
             context.Add(libro);
             await context.SaveChangesAsync();
-            return Ok();
+
+            var libroDTO = mapper.Map<LibroDTO>(libro);
+            return CreatedAtRoute("ObtenerLibro", new {id = libro.Id}, libroDTO);
         }
 
     }

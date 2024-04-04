@@ -33,7 +33,8 @@ namespace _02_ApiAutores.Controllers
         }
 
         // Para mandar datos en nuestos endpoints ponemos entre {}
-        [HttpGet("{id:int}")]
+        //Se ´le puede asignar un nombre para utilizarlo en otra parte
+        [HttpGet("{id:int}", Name = "obtenerAutor")]
         public async Task<ActionResult<AutorDTOLibros>> Get(int id)
         {
             //Obtener un solo registro, se buscara por su Id
@@ -83,8 +84,14 @@ namespace _02_ApiAutores.Controllers
             context.Add(autor);
             //Los cambios marcados se registran en la base de datos
             await context.SaveChangesAsync();
+            
+            var autorDTO = mapper.Map<AutorDTO>(autor);
 
-            return CreatedAtRoute();
+            //construir URL donde se encuentra el recurso
+            //primero se le da el nombre a nuestro endpoint, aqui se le hizo al get con id
+            //despues se checa lo que recibe y eso lo vamos a enviar
+            //y por ultimo el valor a mostrar
+            return CreatedAtRoute("obtenerAutor",new { id = autor.Id}, autorDTO);
         }
 
 
