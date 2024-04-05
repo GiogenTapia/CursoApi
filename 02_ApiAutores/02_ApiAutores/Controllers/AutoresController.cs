@@ -33,7 +33,9 @@ namespace _02_ApiAutores.Controllers
             //return configuration["apellido"];
 
             //obtener un campo en especifico
-            return configuration["persona:nombre"];
+            //return configuration["persona:nombre"];
+            //Variable agregada desde variables de ambiente (se agrego en propiedades del proyecto)
+            return configuration["apellido"];
         }
 
 
