@@ -15,11 +15,22 @@ namespace _02_ApiAutores.Controllers
     {
         private readonly ApplicationDbContext context;
         private readonly IMapper mapper;
+        private readonly IConfiguration configuration;
 
-        public AutoresController(ApplicationDbContext context, IMapper mapper)
+        public AutoresController(ApplicationDbContext context, IMapper mapper, IConfiguration configuration)
         {
             this.context = context;
             this.mapper = mapper;
+            this.configuration = configuration;
+        }
+
+
+        //Ejemplo de obtener datos de nuestro appsettings
+        [HttpGet("configuraciones")]
+        public ActionResult<string> ObtenerApellido()
+        {
+            //return configuration["apellido"];
+            return configuration["persona:nombre"];
         }
 
 
