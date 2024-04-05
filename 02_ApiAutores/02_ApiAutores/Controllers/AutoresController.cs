@@ -29,7 +29,10 @@ namespace _02_ApiAutores.Controllers
         [HttpGet("configuraciones")]
         public ActionResult<string> ObtenerApellido()
         {
+            //Extraer una cadena
             //return configuration["apellido"];
+
+            //obtener un campo en especifico
             return configuration["persona:nombre"];
         }
 
