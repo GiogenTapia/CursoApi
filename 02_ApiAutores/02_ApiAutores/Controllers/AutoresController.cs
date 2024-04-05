@@ -34,8 +34,13 @@ namespace _02_ApiAutores.Controllers
 
             //obtener un campo en especifico
             //return configuration["persona:nombre"];
+
             //Variable agregada desde variables de ambiente (se agrego en propiedades del proyecto)
+            //Si borramos la variable del proyecto y agregamos en user secrets
+            //utilizara el user secrets
             return configuration["apellido"];
+
+
         }
 
 
