@@ -1,0 +1,14 @@
+﻿using _02_ApiAutores.Validaciones;
+using System.ComponentModel.DataAnnotations;
+
+namespace _02_ApiAutores.DTOs
+{
+    public class LibroDTO
+    {
+        public int Id { get; set; }
+        public string Titulo { get; set; }
+        public DateTime FechaPublicacion { get; set; }
+
+        //public List<ComentarioDTO> Comentarios { get; set; }
+    }
+}
