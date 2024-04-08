@@ -26,24 +26,6 @@ namespace _02_ApiAutores.Controllers
         }
 
 
-        //Ejemplo de obtener datos de nuestro appsettings
-        [HttpGet("configuraciones")]
-        public ActionResult<string> ObtenerApellido()
-        {
-            //Extraer una cadena
-            //return configuration["apellido"];
-
-            //obtener un campo en especifico
-            //return configuration["persona:nombre"];
-
-            //Variable agregada desde variables de ambiente (se agrego en propiedades del proyecto)
-            //Si borramos la variable del proyecto y agregamos en user secrets
-            //utilizara el user secrets
-            return configuration["apellido"];
-
-
-        }
-
 
 
         [HttpGet] // api/autores
