@@ -12,6 +12,7 @@ namespace _02_ApiAutores.Controllers
 {
     [ApiController]
     [Route("api/autores")] // api/autores
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class AutoresController : ControllerBase
     {
         private readonly ApplicationDbContext context;
@@ -29,7 +30,8 @@ namespace _02_ApiAutores.Controllers
 
 
         [HttpGet] // api/autores
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] //Protegiendo la autorización
+        // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] //Protegiendo la autorización
+        [AllowAnonymous] //aqui permitimos anonimos, para que usuarios no autenticados puedan consumirla
         public async Task<ActionResult<List<AutorDTO>>> Get()
         {
             //Se coloca en un listado con el ToListAsync
