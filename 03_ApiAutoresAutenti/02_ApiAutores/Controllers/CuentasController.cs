@@ -14,12 +14,15 @@ namespace _02_ApiAutores.Controllers
     {
         private readonly UserManager<IdentityUser> userManager;
         private readonly IConfiguration configuration;
+        private readonly SignInManager<IdentityUser> signInManager;
 
         public CuentasController(UserManager<IdentityUser>userManager,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            SignInManager<IdentityUser> signInManager)
         {
             this.userManager = userManager;
             this.configuration = configuration;
+            this.signInManager = signInManager;
         }
 
         [HttpPost("registrar")]
@@ -39,6 +42,24 @@ namespace _02_ApiAutores.Controllers
             else
             {
                 return BadRequest(resultado.Errors);
+            }
+        }
+
+
+        //Metodo para realizar un login y con ello hacer la construcción del token
+        [HttpPost("login")]
+        public async Task<ActionResult<RespuestaAutenticacion>> Login(CredencialesUsuario credencialesUsuario)
+        {
+            var resultado = await signInManager.PasswordSignInAsync(credencialesUsuario.Email
+                , credencialesUsuario.Password, isPersistent: false, lockoutOnFailure: false);
+
+            if (resultado.Succeeded)
+            {
+                return ConstruirToken(credencialesUsuario);
+            }
+            else
+            {
+                return BadRequest("Login incorrecto");
             }
         }
 
