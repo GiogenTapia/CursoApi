@@ -99,6 +99,18 @@ namespace _02_ApiAutores
                 opciones.AddPolicy("EsAdmin", politica => politica.RequireClaim("esAdmin"));
 
             });
+
+            //Agregando las opciones de CORS
+            //Aqui ponemos el origen de nuestra url
+            services.AddCors(opciones =>
+            {
+                opciones.AddDefaultPolicy(builder =>
+                {
+                    builder.WithOrigins("algunaURL").AllowAnyMethod().AllowAnyHeader();
+                });
+            });
+
+
         }
 
 
@@ -120,6 +132,9 @@ namespace _02_ApiAutores
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            //Usar CORS en nuestra api
+            app.UseCors();
 
             // Agregando filtro de autorización
             app.UseAuthorization();
