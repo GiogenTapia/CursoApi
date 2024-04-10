@@ -100,6 +100,10 @@ namespace _02_ApiAutores
 
             });
 
+
+            //Con esto tenemos acceso a los servicios de proteccion de datos
+            services.AddDataProtection();
+
             //Agregando las opciones de CORS
             //Aqui ponemos el origen de nuestra url
             services.AddCors(opciones =>
