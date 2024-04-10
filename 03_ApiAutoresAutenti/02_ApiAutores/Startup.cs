@@ -91,6 +91,14 @@ namespace _02_ApiAutores
             services.AddIdentity<IdentityUser,IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+
+            //Agregando politicas de autorizacion 
+            services.AddAuthorization(opciones =>
+            {
+                opciones.AddPolicy("EsAdmin", politica => politica.RequireClaim("esAdmin"));
+
+            });
         }
 
 

@@ -12,7 +12,8 @@ namespace _02_ApiAutores.Controllers
 {
     [ApiController]
     [Route("api/autores")] // api/autores
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //Agregando autorizacion y la politica que solo lo pueda usar el claim de EsAdmin
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
     public class AutoresController : ControllerBase
     {
         private readonly ApplicationDbContext context;
@@ -121,7 +122,6 @@ namespace _02_ApiAutores.Controllers
         } 
 
         [HttpDelete("{id:int}")] // api/autores/1
-        //
         public async Task<ActionResult> Detele(int id)
         {
             var existe = await context.Autores.AnyAsync(x=> x.Id == id);
