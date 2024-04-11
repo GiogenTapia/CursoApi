@@ -1,5 +1,6 @@
 ﻿using _02_ApiAutores.Filtros;
 using _02_ApiAutores.Middlewares;
+using _02_ApiAutores.Servicios;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -114,6 +115,8 @@ namespace _02_ApiAutores
                 });
             });
 
+            //Agregando el servicio HASH
+            services.AddTransient<HashService>();
 
         }
 
