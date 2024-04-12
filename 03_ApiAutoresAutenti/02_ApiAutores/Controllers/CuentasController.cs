@@ -36,7 +36,7 @@ namespace _02_ApiAutores.Controllers
         }
 
         //Ejemplo de hash
-        [HttpGet("hash/{textoPlano}")]
+        [HttpGet("hash/{textoPlano}", Name = "ejemploHASH")]
         public ActionResult RealizarHash(string textoPlano)
         {
             var resultado1 = hashService.Hash(textoPlano);
@@ -51,7 +51,7 @@ namespace _02_ApiAutores.Controllers
 
 
         //Ejemplo de encriptación
-        [HttpGet("encriptar")]
+        [HttpGet("encriptar", Name = "ejemploEncriptar")]
         public ActionResult Encriptar()
         {
             var textoPlano = "Giovanni";
@@ -68,7 +68,7 @@ namespace _02_ApiAutores.Controllers
 
 
         //Ejemplo de poner un limite de tiempo para desencriptar
-        [HttpGet("encriptarPorTiempo")]
+        [HttpGet("encriptarPorTiempo", Name = "EjemploEncriptarTiempo")]
         public ActionResult EncriptarPorTiempo()
         {
             var protectorLimitadoPorTiempo = dataProtector.ToTimeLimitedDataProtector();
@@ -86,7 +86,7 @@ namespace _02_ApiAutores.Controllers
             });
         }
 
-        [HttpPost("registrar")]
+        [HttpPost("registrar", Name = "registrarUsuario")]
         public async Task<ActionResult<RespuestaAutenticacion>> Registrar(CredencialesUsuario credencialesUsuario)
         {
 
@@ -108,7 +108,7 @@ namespace _02_ApiAutores.Controllers
 
 
         //Metodo para realizar un login y con ello hacer la construcción del token
-        [HttpPost("login")]
+        [HttpPost("login", Name = "loginUsuario")]
         public async Task<ActionResult<RespuestaAutenticacion>> Login(CredencialesUsuario credencialesUsuario)
         {
             var resultado = await signInManager.PasswordSignInAsync(credencialesUsuario.Email
@@ -125,7 +125,7 @@ namespace _02_ApiAutores.Controllers
         }
 
         //renovar el token para cuando el usuairo este utilizando dicho token
-        [HttpGet("RenovarToken")]
+        [HttpGet("RenovarToken", Name = "renovarToken")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<RespuestaAutenticacion>>  Renovar()
         {
@@ -139,7 +139,7 @@ namespace _02_ApiAutores.Controllers
         }
 
         //Hacer administrador agregandole un claim
-        [HttpPost("HacerAdmin")]
+        [HttpPost("HacerAdmin", Name = "hacerAdmin")]
         public async Task<ActionResult<EditarAdminDTO>> HacerAdmin(EditarAdminDTO editarAdminDTO)
         {
             var usuario = await userManager.FindByEmailAsync(editarAdminDTO.Email);
@@ -148,7 +148,7 @@ namespace _02_ApiAutores.Controllers
         }
 
         //Quitar el admin removiendo el claim
-        [HttpPost("RemoverAdmin")]
+        [HttpPost("RemoverAdmin", Name = "removerAdmin")]
         public async Task<ActionResult<EditarAdminDTO>> RemoverAdmin(EditarAdminDTO editarAdminDTO)
         {
             var usuario = await userManager.FindByEmailAsync(editarAdminDTO.Email);

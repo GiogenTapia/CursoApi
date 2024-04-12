@@ -22,7 +22,7 @@ namespace _02_ApiAutores.Controllers
         }
 
 
-        [HttpGet("{id:int}", Name = "ObtenerLibro")]
+        [HttpGet("{id:int}", Name = "obtenerLibro")]
         public async Task<ActionResult<LibroDTOAutores>> Get(int id)
         {
             //Esto es por si queremos mandar los comentarios, pero se ignora para 
@@ -44,7 +44,7 @@ namespace _02_ApiAutores.Controllers
             return mapper.Map<LibroDTOAutores>(libro);
         }
 
-        [HttpPost]
+        [HttpPost(Name = "crearLibro")]
         public async Task<ActionResult> Post(LibroCreacionDTO libroCreacionDTO)
         {
             if (libroCreacionDTO.AutoresIds == null)
@@ -70,7 +70,7 @@ namespace _02_ApiAutores.Controllers
             return CreatedAtRoute("ObtenerLibro", new { id = libro.Id }, libroDTO);
         }
 
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:int}", Name = "actualizarLibro")]
         public async Task<ActionResult> Put(int id, LibroCreacionDTO libroCreacionDTO)
         {
 
@@ -93,22 +93,9 @@ namespace _02_ApiAutores.Controllers
             return NoContent();
         }
 
-        private void AsignarOrdenAutores(Libro libro)
-        {
-            if (libro.AutoresLibros != null)
-            {
-                for (int i = 0; i < libro.AutoresLibros.Count; i++)
-                {
-                    libro.AutoresLibros[i].Orden = i;
-                }
-
-            }
-        }
-
-
         //El patch nos ayuda a actualizar datos en especifico sin poner toda la entidad
         //para ello recuerda instalar el nuget de newtonsoft y agregarlo a startup
-        [HttpPatch("{id:int}")]
+        [HttpPatch("{id:int}", Name = "patchLibro")]
         public async Task<ActionResult> Patch(int id, JsonPatchDocument<LibroPatchDTO> patchDocument)
         {
             if (patchDocument == null)
@@ -143,10 +130,7 @@ namespace _02_ApiAutores.Controllers
         }
 
 
-
-
-        [HttpDelete("{id:int}")]
-        //
+        [HttpDelete("{id:int}", Name = "borrarLibro")]
         public async Task<ActionResult> Detele(int id)
         {
             var existe = await context.Libros.AnyAsync(x => x.Id == id);
@@ -159,6 +143,18 @@ namespace _02_ApiAutores.Controllers
             await context.SaveChangesAsync();
             return NoContent();
 
+        }
+
+        private void AsignarOrdenAutores(Libro libro)
+        {
+            if (libro.AutoresLibros != null)
+            {
+                for (int i = 0; i < libro.AutoresLibros.Count; i++)
+                {
+                    libro.AutoresLibros[i].Orden = i;
+                }
+
+            }
         }
 
     }

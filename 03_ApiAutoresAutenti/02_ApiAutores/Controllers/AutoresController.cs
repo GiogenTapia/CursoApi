@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Xml.Linq;
 
 
 namespace _02_ApiAutores.Controllers
@@ -30,7 +31,7 @@ namespace _02_ApiAutores.Controllers
 
 
 
-        [HttpGet] // api/autores
+        [HttpGet(Name = "obtenerAutores")] // api/autores
         // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] //Protegiendo la autorización
         [AllowAnonymous] //aqui permitimos anonimos, para que usuarios no autenticados puedan consumirla
         public async Task<ActionResult<List<AutorDTO>>> Get()
@@ -60,7 +61,7 @@ namespace _02_ApiAutores.Controllers
         }
 
 
-        [HttpGet("{nombre}")]
+        [HttpGet("{nombre}", Name = "obtenerAutorPorNombre")]
         public async Task<ActionResult<List<AutorDTO>>> Get([FromRoute] string nombre)
         {
             //Se obtiene un solo dato a buscar con el nombre recibido
@@ -74,7 +75,7 @@ namespace _02_ApiAutores.Controllers
             return mapper.Map<List<AutorDTO>>(autores);
         }
 
-        [HttpPost]
+        [HttpPost(Name = "crearAutor")]
         public async Task<ActionResult> Post([FromBody] AutorCreacionDTO autorCreacionDTO)
         {
             var existeAutorNombre = await context.Autores.AnyAsync(x => x.Nombre == autorCreacionDTO.Nombre);
@@ -103,7 +104,7 @@ namespace _02_ApiAutores.Controllers
         }
 
 
-        [HttpPut("{id:int}")] // api/autores/1
+        [HttpPut("{id:int}", Name = "actualizarAutor")] // api/autores/1
         public async Task<ActionResult> Put(AutorCreacionDTO autorCreacionDTO, int id)
         {
             var existe = await context.Autores.AnyAsync(x => x.Id == id);
@@ -121,7 +122,7 @@ namespace _02_ApiAutores.Controllers
             return NoContent();
         } 
 
-        [HttpDelete("{id:int}")] // api/autores/1
+        [HttpDelete("{id:int}", Name = "actualizarAutor")] // api/autores/1
         public async Task<ActionResult> Detele(int id)
         {
             var existe = await context.Autores.AnyAsync(x=> x.Id == id);

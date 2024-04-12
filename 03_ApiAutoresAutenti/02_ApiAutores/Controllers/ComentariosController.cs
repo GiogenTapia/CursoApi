@@ -26,7 +26,7 @@ namespace _02_ApiAutores.Controllers
             this.userManager = userManager;
         }
         
-        [HttpGet]
+        [HttpGet(Name = "obtenerComentariosLibro")]
         public async Task<ActionResult<List<ComentarioDTO>>> Get(int libroId)
         {
             var existeLibro = await context.Libros.AnyAsync(libroDB => libroDB.Id == libroId);
@@ -39,7 +39,7 @@ namespace _02_ApiAutores.Controllers
             return mapper.Map<List<ComentarioDTO>>(libros);
         }
 
-        [HttpGet("{id:int}", Name ="ObtenerComentario")]
+        [HttpGet("{id:int}", Name ="obtenerComentario")]
         public async Task<ActionResult<ComentarioDTO>> GetPorId(int id)
         {
             var comentario = await context.Comentarios.FirstOrDefaultAsync(comentariobd => comentariobd.Id == id);
@@ -51,7 +51,7 @@ namespace _02_ApiAutores.Controllers
             return mapper.Map<ComentarioDTO>(comentario);
         }
 
-        [HttpPost]
+        [HttpPost(Name = "crearComentario")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult> Post(int libroId, 
             ComentarioCreacionDTO comentarioCreacionDTO)
@@ -83,7 +83,7 @@ namespace _02_ApiAutores.Controllers
         }
 
 
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:int}", Name = "actualizarComentario")]
         public async Task<ActionResult> Put(int libroId, int id, ComentarioCreacionDTO comentarioCreacionDTO)
         {
             var existeLibro = await context.Libros.AnyAsync(libroDB => libroDB.Id == libroId);
