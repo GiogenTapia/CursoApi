@@ -57,7 +57,27 @@ namespace _02_ApiAutores.Controllers
                 return NotFound();
             }
 
-            return mapper.Map<AutorDTOLibros>(autor);
+            //Agregando enlaces
+            var dto = mapper.Map<AutorDTOLibros>(autor);
+            GenerarEnlaces(dto);
+
+            return dto;
+        }
+
+        //Metodo para generar Enlaces
+        private void GenerarEnlaces(AutorDTO autorDTO)
+        {
+            autorDTO.Enlaces.Add(new DatoHATEOAS(
+                Url.Link("obtenerAutor", new {id = autorDTO.Id}),
+                "self","GET"));
+
+            autorDTO.Enlaces.Add(new DatoHATEOAS(
+                Url.Link("actualizarAutor", new {id = autorDTO.Id}),
+                "autor-actualizar","PUT"));
+
+            autorDTO.Enlaces.Add(new DatoHATEOAS(
+                Url.Link("eliminarAutor", new {id = autorDTO.Id}),
+                "self","DELETE"));
         }
 
 
@@ -122,7 +142,7 @@ namespace _02_ApiAutores.Controllers
             return NoContent();
         } 
 
-        [HttpDelete("{id:int}", Name = "actualizarAutor")] // api/autores/1
+        [HttpDelete("{id:int}", Name = "eliminarAutor")] // api/autores/1
         public async Task<ActionResult> Detele(int id)
         {
             var existe = await context.Autores.AnyAsync(x=> x.Id == id);
