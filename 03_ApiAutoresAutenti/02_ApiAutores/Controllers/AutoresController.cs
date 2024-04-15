@@ -39,33 +39,35 @@ namespace _02_ApiAutores.Controllers
         [HttpGet(Name = "obtenerAutores")] // api/autores
         // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] //Protegiendo la autorización
         [AllowAnonymous] //aqui permitimos anonimos, para que usuarios no autenticados puedan consumirla
-        public async Task<ActionResult<ColeccionDeRecursos<AutorDTO>>> Get()
+        public async Task<ActionResult<ColeccionDeRecursos<AutorDTO>>> Get([FromQuery] bool incluirHATEOAS = true)
         {
             //Se coloca en un listado con el ToListAsync
             var autores = await context.Autores.ToListAsync();
             var dtos = mapper.Map<List<AutorDTO>>(autores);
-            var esAdmin = await authorizationService.AuthorizeAsync(User, "esAdmin");
 
+
+            if (incluirHATEOAS)
+            {
+            var esAdmin = await authorizationService.AuthorizeAsync(User, "esAdmin");
             foreach (var dto in dtos)
             {
                 GenerarEnlaces(dto, esAdmin.Succeeded);
 
             }
+                //Agregar nuevos enlaces diferentes a los del metodo con una clase T
+                var resultado = new ColeccionDeRecursos<AutorDTO> { Valores = dtos };
 
-            //Agregar nuevos enlaces diferentes a los del metodo con una clase T
-            var resultado = new ColeccionDeRecursos<AutorDTO> {Valores = dtos };
-            
-            resultado.Enlaces.Add(new DatoHATEOAS(Url.Link("obtenerAutores", new {}),
-                "self", "GET"));
-            if (esAdmin.Succeeded)
-            {
-                resultado.Enlaces.Add(new DatoHATEOAS(Url.Link("crearAutor", new {}),
-                 "crear-autor", "GET"));
+                resultado.Enlaces.Add(new DatoHATEOAS(Url.Link("obtenerAutores", new { }),
+                    "self", "GET"));
+                if (esAdmin.Succeeded)
+                {
+                    resultado.Enlaces.Add(new DatoHATEOAS(Url.Link("crearAutor", new { }),
+                     "crear-autor", "GET"));
+                }
+                return resultado;
             }
 
-
-
-            return resultado;
+            return Ok(dtos);
         }
 
         // Para mandar datos en nuestos endpoints ponemos entre {}
