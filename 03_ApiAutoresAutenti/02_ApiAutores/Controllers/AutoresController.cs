@@ -40,35 +40,13 @@ namespace _02_ApiAutores.Controllers
         [HttpGet(Name = "obtenerAutores")] // api/autores
         // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] //Protegiendo la autorización
         [AllowAnonymous] //aqui permitimos anonimos, para que usuarios no autenticados puedan consumirla
-        public async Task<ActionResult<ColeccionDeRecursos<AutorDTO>>> Get([FromQuery] bool incluirHATEOAS = true)
+        [ServiceFilter(typeof(HATEOASAutorFilterAttribute))]
+        public async Task<ActionResult<List<AutorDTO>>> Get([FromHeader] string  incluirHATEOAS)
         {
             //Se coloca en un listado con el ToListAsync
             var autores = await context.Autores.ToListAsync();
-            var dtos = mapper.Map<List<AutorDTO>>(autores);
+            return mapper.Map<List<AutorDTO>>(autores);
 
-
-            if (incluirHATEOAS)
-            {
-            var esAdmin = await authorizationService.AuthorizeAsync(User, "esAdmin");
-            //foreach (var dto in dtos)
-            //{
-            //    GenerarEnlaces(dto, esAdmin.Succeeded);
-
-            //}
-                //Agregar nuevos enlaces diferentes a los del metodo con una clase T
-                var resultado = new ColeccionDeRecursos<AutorDTO> { Valores = dtos };
-
-                resultado.Enlaces.Add(new DatoHATEOAS(Url.Link("obtenerAutores", new { }),
-                    "self", "GET"));
-                if (esAdmin.Succeeded)
-                {
-                    resultado.Enlaces.Add(new DatoHATEOAS(Url.Link("crearAutor", new { }),
-                     "crear-autor", "GET"));
-                }
-                return resultado;
-            }
-
-            return Ok(dtos);
         }
 
         // Para mandar datos en nuestos endpoints ponemos entre {}
@@ -98,7 +76,7 @@ namespace _02_ApiAutores.Controllers
 
 
         [HttpGet("{nombre}", Name = "obtenerAutorPorNombre")]
-        public async Task<ActionResult<List<AutorDTO>>> Get([FromRoute] string nombre)
+        public async Task<ActionResult<List<AutorDTO>>> GetPorNombre([FromRoute] string nombre)
         {
             //Se obtiene un solo dato a buscar con el nombre recibido
             //var autor = await context.Autores.FirstOrDefaultAsync(autorBD => autorBD.Nombre.Contains(nombre));
