@@ -1,8 +1,10 @@
 ﻿using _02_ApiAutores.Filtros;
 using _02_ApiAutores.Middlewares;
 using _02_ApiAutores.Servicios;
+using _02_ApiAutores.Utilidades;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -114,6 +116,10 @@ namespace _02_ApiAutores
                     builder.WithOrigins("algunaURL").AllowAnyMethod().AllowAnyHeader();
                 });
             });
+
+            services.AddTransient<GeneradorEnlaces>();
+            services.AddTransient<HATEOASAutorFilterAttribute>();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
             //Agregando el servicio HASH
             services.AddTransient<HashService>();

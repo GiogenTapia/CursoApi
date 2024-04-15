@@ -1,6 +1,7 @@
 ﻿using _02_ApiAutores.DTOs;
 using _02_ApiAutores.Entidades;
 using _02_ApiAutores.Filtros;
+using _02_ApiAutores.Utilidades;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -49,11 +50,11 @@ namespace _02_ApiAutores.Controllers
             if (incluirHATEOAS)
             {
             var esAdmin = await authorizationService.AuthorizeAsync(User, "esAdmin");
-            foreach (var dto in dtos)
-            {
-                GenerarEnlaces(dto, esAdmin.Succeeded);
+            //foreach (var dto in dtos)
+            //{
+            //    GenerarEnlaces(dto, esAdmin.Succeeded);
 
-            }
+            //}
                 //Agregar nuevos enlaces diferentes a los del metodo con una clase T
                 var resultado = new ColeccionDeRecursos<AutorDTO> { Valores = dtos };
 
@@ -74,7 +75,8 @@ namespace _02_ApiAutores.Controllers
         //Se ´le puede asignar un nombre para utilizarlo en otra parte
         [HttpGet("{id:int}", Name = "obtenerAutor")]
         [AllowAnonymous]
-        public async Task<ActionResult<AutorDTOLibros>> Get(int id)
+        [ServiceFilter(typeof(HATEOASAutorFilterAttribute))]
+        public async Task<ActionResult<AutorDTOLibros>> Get(int id, [FromHeader] string incluirHATEOAS)
         {
             //Obtener un solo registro, se buscara por su Id
             var autor = await context.Autores
@@ -89,32 +91,10 @@ namespace _02_ApiAutores.Controllers
 
             //Agregando enlaces
             var dto = mapper.Map<AutorDTOLibros>(autor);
-            var esAdmin = await authorizationService.AuthorizeAsync(User, "esAdmin");
-            GenerarEnlaces(dto, esAdmin.Succeeded);
 
             return dto;
         }
 
-        //Metodo para generar Enlaces
-        private void GenerarEnlaces(AutorDTO autorDTO, bool esAdmin)
-        {
-            autorDTO.Enlaces.Add(new DatoHATEOAS(
-                Url.Link("obtenerAutor", new {id = autorDTO.Id}),
-                "self","GET"));
-
-            if (esAdmin)
-            {
-                autorDTO.Enlaces.Add(new DatoHATEOAS(
-                    Url.Link("actualizarAutor", new {id = autorDTO.Id}),
-                    "autor-actualizar","PUT"));
-
-                autorDTO.Enlaces.Add(new DatoHATEOAS(
-                    Url.Link("eliminarAutor", new {id = autorDTO.Id}),
-                    "self","DELETE"));
-            }
-
-
-        }
 
 
         [HttpGet("{nombre}", Name = "obtenerAutorPorNombre")]
