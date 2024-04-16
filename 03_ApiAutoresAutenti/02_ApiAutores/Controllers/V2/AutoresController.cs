@@ -13,7 +13,9 @@ using System.Xml.Linq;
 namespace _02_ApiAutores.Controllers.V2
 {
     [ApiController]
-    [Route("api/v2/autores")] // api/autores
+    [Route("api/autores")] // api/autores
+    //[Route("api/v2/autores")]
+    [CabeceraEstaPresente("x-version", "2")]
     //Agregando autorizacion y la politica que solo lo pueda usar el claim de EsAdmin
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
     public class AutoresController : ControllerBase
