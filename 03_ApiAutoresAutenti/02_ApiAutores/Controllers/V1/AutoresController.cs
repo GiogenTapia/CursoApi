@@ -10,10 +10,10 @@ using Microsoft.EntityFrameworkCore;
 using System.Xml.Linq;
 
 
-namespace _02_ApiAutores.Controllers
+namespace _02_ApiAutores.Controllers.V1
 {
     [ApiController]
-    [Route("api/autores")] // api/autores
+    [Route("api/v1/autores")] // api/autores
     //Agregando autorizacion y la politica que solo lo pueda usar el claim de EsAdmin
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
     public class AutoresController : ControllerBase
@@ -24,9 +24,9 @@ namespace _02_ApiAutores.Controllers
         private readonly IAuthorizationService authorizationService;
 
         public AutoresController(ApplicationDbContext context
-            ,IMapper mapper
-            ,IConfiguration configuration
-            ,IAuthorizationService authorizationService)
+            , IMapper mapper
+            , IConfiguration configuration
+            , IAuthorizationService authorizationService)
         {
             this.context = context;
             this.mapper = mapper;
@@ -37,7 +37,7 @@ namespace _02_ApiAutores.Controllers
 
 
 
-        [HttpGet(Name = "obtenerAutores")] // api/autores
+        [HttpGet(Name = "obtenerAutoresv1")] // api/autores
         // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] //Protegiendo la autorización
         [AllowAnonymous] //aqui permitimos anonimos, para que usuarios no autenticados puedan consumirla
         [ServiceFilter(typeof(HATEOASAutorFilterAttribute))]
@@ -51,7 +51,7 @@ namespace _02_ApiAutores.Controllers
 
         // Para mandar datos en nuestos endpoints ponemos entre {}
         //Se ´le puede asignar un nombre para utilizarlo en otra parte
-        [HttpGet("{id:int}", Name = "obtenerAutor")]
+        [HttpGet("{id:int}", Name = "obtenerAutorv1")]
         [AllowAnonymous]
         [ServiceFilter(typeof(HATEOASAutorFilterAttribute))]
         public async Task<ActionResult<AutorDTOLibros>> Get(int id)
@@ -75,12 +75,12 @@ namespace _02_ApiAutores.Controllers
 
 
 
-        [HttpGet("{nombre}", Name = "obtenerAutorPorNombre")]
+        [HttpGet("{nombre}", Name = "obtenerAutorPorNombrev1")]
         public async Task<ActionResult<List<AutorDTO>>> GetPorNombre([FromRoute] string nombre)
         {
             //Se obtiene un solo dato a buscar con el nombre recibido
             //var autor = await context.Autores.FirstOrDefaultAsync(autorBD => autorBD.Nombre.Contains(nombre));
-            
+
             //Se obtiene todos los usuarios que coincidan con ese nombre
             //Aqui se utilizan clausulas de filtros.
             var autores = await context.Autores.Where(autorBD => autorBD.Nombre.Contains(nombre)).ToListAsync();
@@ -89,7 +89,7 @@ namespace _02_ApiAutores.Controllers
             return mapper.Map<List<AutorDTO>>(autores);
         }
 
-        [HttpPost(Name = "crearAutor")]
+        [HttpPost(Name = "crearAutorv1")]
         public async Task<ActionResult> Post([FromBody] AutorCreacionDTO autorCreacionDTO)
         {
             var existeAutorNombre = await context.Autores.AnyAsync(x => x.Nombre == autorCreacionDTO.Nombre);
@@ -107,18 +107,18 @@ namespace _02_ApiAutores.Controllers
             context.Add(autor);
             //Los cambios marcados se registran en la base de datos
             await context.SaveChangesAsync();
-            
+
             var autorDTO = mapper.Map<AutorDTO>(autor);
 
             //construir URL donde se encuentra el recurso
             //primero se le da el nombre a nuestro endpoint, aqui se le hizo al get con id
             //despues se checa lo que recibe y eso lo vamos a enviar
             //y por ultimo el valor a mostrar
-            return CreatedAtRoute("obtenerAutor",new { id = autor.Id}, autorDTO);
+            return CreatedAtRoute("obtenerAutor", new { id = autor.Id }, autorDTO);
         }
 
 
-        [HttpPut("{id:int}", Name = "actualizarAutor")] // api/autores/1
+        [HttpPut("{id:int}", Name = "actualizarAutorv1")] // api/autores/1
         public async Task<ActionResult> Put(AutorCreacionDTO autorCreacionDTO, int id)
         {
             var existe = await context.Autores.AnyAsync(x => x.Id == id);
@@ -134,12 +134,12 @@ namespace _02_ApiAutores.Controllers
             context.Update(autor);
             await context.SaveChangesAsync();
             return NoContent();
-        } 
+        }
 
-        [HttpDelete("{id:int}", Name = "eliminarAutor")] // api/autores/1
+        [HttpDelete("{id:int}", Name = "eliminarAutorv1")] // api/autores/1
         public async Task<ActionResult> Detele(int id)
         {
-            var existe = await context.Autores.AnyAsync(x=> x.Id == id);
+            var existe = await context.Autores.AnyAsync(x => x.Id == id);
 
             if (!existe)
             {

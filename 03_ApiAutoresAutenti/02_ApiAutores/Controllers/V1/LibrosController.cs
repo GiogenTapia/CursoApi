@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace _02_ApiAutores.Controllers
+namespace _02_ApiAutores.Controllers.V1
 {
     [ApiController]
-    [Route("api/libros")]
+    [Route("api/v1/libros")]
     public class LibrosController : ControllerBase
     {
         private readonly ApplicationDbContext context;
@@ -22,7 +22,7 @@ namespace _02_ApiAutores.Controllers
         }
 
 
-        [HttpGet("{id:int}", Name = "obtenerLibro")]
+        [HttpGet("{id:int}", Name = "obtenerLibrov1")]
         public async Task<ActionResult<LibroDTOAutores>> Get(int id)
         {
             //Esto es por si queremos mandar los comentarios, pero se ignora para 
@@ -44,7 +44,7 @@ namespace _02_ApiAutores.Controllers
             return mapper.Map<LibroDTOAutores>(libro);
         }
 
-        [HttpPost(Name = "crearLibro")]
+        [HttpPost(Name = "crearLibrov1")]
         public async Task<ActionResult> Post(LibroCreacionDTO libroCreacionDTO)
         {
             if (libroCreacionDTO.AutoresIds == null)
@@ -70,7 +70,7 @@ namespace _02_ApiAutores.Controllers
             return CreatedAtRoute("ObtenerLibro", new { id = libro.Id }, libroDTO);
         }
 
-        [HttpPut("{id:int}", Name = "actualizarLibro")]
+        [HttpPut("{id:int}", Name = "actualizarLibrov1")]
         public async Task<ActionResult> Put(int id, LibroCreacionDTO libroCreacionDTO)
         {
 
@@ -78,7 +78,7 @@ namespace _02_ApiAutores.Controllers
             //aqui lo que se hace es incluir al igual los autoreslibros
             //despues obener el libro con el mismo id a actualizar
             var libroDB = await context.Libros
-                .Include(x=> x.AutoresLibros)
+                .Include(x => x.AutoresLibros)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (libroDB == null)
@@ -95,7 +95,7 @@ namespace _02_ApiAutores.Controllers
 
         //El patch nos ayuda a actualizar datos en especifico sin poner toda la entidad
         //para ello recuerda instalar el nuget de newtonsoft y agregarlo a startup
-        [HttpPatch("{id:int}", Name = "patchLibro")]
+        [HttpPatch("{id:int}", Name = "patchLibrov1")]
         public async Task<ActionResult> Patch(int id, JsonPatchDocument<LibroPatchDTO> patchDocument)
         {
             if (patchDocument == null)
@@ -104,7 +104,7 @@ namespace _02_ApiAutores.Controllers
             }
 
             var libroBD = await context.Libros.FirstOrDefaultAsync(libroBD => libroBD.Id == id);
-            
+
             if (libroBD == null)
             {
                 return NotFound();
@@ -130,7 +130,7 @@ namespace _02_ApiAutores.Controllers
         }
 
 
-        [HttpDelete("{id:int}", Name = "borrarLibro")]
+        [HttpDelete("{id:int}", Name = "borrarLibrov1")]
         public async Task<ActionResult> Detele(int id)
         {
             var existe = await context.Libros.AnyAsync(x => x.Id == id);
