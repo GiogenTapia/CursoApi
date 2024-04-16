@@ -32,6 +32,7 @@ namespace _02_ApiAutores
             //Aqui se agrega el newtonsoft
             services.AddControllers(opciones =>
             {
+                opciones.Conventions.Add(new SwaggerAgrupaPorVersion());
                 opciones.Filters.Add(typeof(FiltroDeExcepcion));
             }).AddJsonOptions(x=>
             x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles)
@@ -61,7 +62,8 @@ namespace _02_ApiAutores
             //Configurar Swagger para mandar nuestro JWT
             services.AddSwaggerGen(c =>
             {
-
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApiAutores", Version = "v1" });
+                c.SwaggerDoc("v2", new OpenApiInfo { Title = "WebApiAutores", Version = "v2" });
                 c.OperationFilter<AgregarParametrosHATEOAS>();
 
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -142,7 +144,10 @@ namespace _02_ApiAutores
             if (env.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI( c => { 
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json","WebApiAutores v1");
+                    c.SwaggerEndpoint("/swagger/v2/swagger.json", "WebApiAutores v2");
+                });
             }
 
             app.UseHttpsRedirection();
