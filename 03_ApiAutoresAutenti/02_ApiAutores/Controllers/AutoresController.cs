@@ -41,7 +41,7 @@ namespace _02_ApiAutores.Controllers
         // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] //Protegiendo la autorización
         [AllowAnonymous] //aqui permitimos anonimos, para que usuarios no autenticados puedan consumirla
         [ServiceFilter(typeof(HATEOASAutorFilterAttribute))]
-        public async Task<ActionResult<List<AutorDTO>>> Get([FromHeader] string  incluirHATEOAS)
+        public async Task<ActionResult<List<AutorDTO>>> Get()
         {
             //Se coloca en un listado con el ToListAsync
             var autores = await context.Autores.ToListAsync();
@@ -54,7 +54,7 @@ namespace _02_ApiAutores.Controllers
         [HttpGet("{id:int}", Name = "obtenerAutor")]
         [AllowAnonymous]
         [ServiceFilter(typeof(HATEOASAutorFilterAttribute))]
-        public async Task<ActionResult<AutorDTOLibros>> Get(int id, [FromHeader] string incluirHATEOAS)
+        public async Task<ActionResult<AutorDTOLibros>> Get(int id)
         {
             //Obtener un solo registro, se buscara por su Id
             var autor = await context.Autores

@@ -61,6 +61,9 @@ namespace _02_ApiAutores
             //Configurar Swagger para mandar nuestro JWT
             services.AddSwaggerGen(c =>
             {
+
+                c.OperationFilter<AgregarParametrosHATEOAS>();
+
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
