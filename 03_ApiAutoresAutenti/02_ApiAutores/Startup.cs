@@ -4,14 +4,18 @@ using _02_ApiAutores.Servicios;
 using _02_ApiAutores.Utilidades;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 
+//Agregar los retornos de los endpoints ejemplo: 200, 404, etc
+[assembly: ApiConventionType(typeof(DefaultApiConventions))]
 
 namespace _02_ApiAutores
 {
@@ -62,7 +66,22 @@ namespace _02_ApiAutores
             //Configurar Swagger para mandar nuestro JWT
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApiAutores", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { 
+                    Title = "WebApiAutores", 
+                    Version = "v1" ,
+                    Description = "Este es un web api para autores y libros",
+                    Contact = new OpenApiContact
+                    {
+                        Email = "gio@gmail.com",
+                        Name= "Giovanni Tapia",
+                        Url = new Uri("https://www.youtube.com")
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "MIT"
+                    },
+
+                });
                 c.SwaggerDoc("v2", new OpenApiInfo { Title = "WebApiAutores", Version = "v2" });
                 c.OperationFilter<AgregarParametrosHATEOAS>();
                 c.OperationFilter<AgregarParametroXVersion>();
@@ -75,6 +94,7 @@ namespace _02_ApiAutores
                     In = ParameterLocation.Header,
                 });
 
+                //Agregar comentarios en mis endpoints
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
@@ -90,6 +110,9 @@ namespace _02_ApiAutores
                     }
 
                 });
+                var archivoXML = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var rutaXML = Path.Combine(AppContext.BaseDirectory, archivoXML);
+                c.IncludeXmlComments(rutaXML);
             });
 
             //Agregamos el Automapper
