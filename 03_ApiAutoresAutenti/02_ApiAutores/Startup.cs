@@ -142,7 +142,8 @@ namespace _02_ApiAutores
             {
                 opciones.AddDefaultPolicy(builder =>
                 {
-                    builder.WithOrigins("algunaURL").AllowAnyMethod().AllowAnyHeader();
+                    builder.WithOrigins("algunaURL").AllowAnyMethod().AllowAnyHeader()
+                    .WithExposedHeaders(new string[] { "cantidadTotalRegistros" });
                 });
             });
 

@@ -46,10 +46,19 @@ namespace _02_ApiAutores.Controllers.V1
         // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] //Protegiendo la autorización
         [AllowAnonymous] //aqui permitimos anonimos, para que usuarios no autenticados puedan consumirla
         [ServiceFilter(typeof(HATEOASAutorFilterAttribute))]
-        public async Task<ActionResult<List<AutorDTO>>> Get()
+        public async Task<ActionResult<List<AutorDTO>>> Get([FromQuery] PaginacionDTO paginacionDTO)
         {
+
+
+            //Mandar la cantidad de autores a mi cabecera
+            var queryble = context.Autores.AsQueryable();
+            await HttpContext.InsertarParametrosPaginacionEnCabecera(queryble);
+
             //Se coloca en un listado con el ToListAsync
-            var autores = await context.Autores.ToListAsync();
+            // var autores = await context.Autores.ToListAsync();
+
+            //utilizando la paginacion
+            var autores = await queryble.OrderBy(autor => autor.Nombre).Paginar(paginacionDTO).ToListAsync();
             return mapper.Map<List<AutorDTO>>(autores);
 
         }
