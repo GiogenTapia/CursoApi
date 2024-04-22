@@ -168,12 +168,13 @@ namespace _02_ApiAutores
 
             if (env.IsDevelopment())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI( c => { 
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json","WebApiAutores v1");
-                    c.SwaggerEndpoint("/swagger/v2/swagger.json", "WebApiAutores v2");
-                });
+                app.UseDeveloperExceptionPage();
             }
+            app.UseSwagger();
+            app.UseSwaggerUI(c => {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApiAutores v1");
+                c.SwaggerEndpoint("/swagger/v2/swagger.json", "WebApiAutores v2");
+            });
 
             app.UseHttpsRedirection();
 
