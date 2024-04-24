@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PeliculasApi.DTOs;
+using PeliculasApi.Entidades;
 
 namespace PeliculasApi.Controllers
 {
@@ -42,9 +43,41 @@ namespace PeliculasApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] )
+        public async Task<ActionResult> Post([FromForm] ActorCreacionDTO actorCreacionDTO)
         {
+            var entidad = mapper.Map<Actor>(actorCreacionDTO);
+            context.Add(entidad);
+            await context.SaveChangesAsync();
+            var dto = mapper.Map<ActorDTO>(entidad);
+            return new CreatedAtRouteResult("obtenerActor", new { id = entidad.Id }, dto);
+        }
 
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> Put(int id,[FromForm] ActorCreacionDTO actorCreacionDTO)
+        {
+            var entidad = mapper.Map<Actor>(actorCreacionDTO); 
+            entidad.Id = id;
+            context.Entry(entidad).State = EntityState.Modified;
+            await context.SaveChangesAsync();
+            return NoContent();
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var existe = await context.Actores.AnyAsync(x => x.Id == id);
+            if (!existe)
+            {
+                return NotFound();
+            }
+
+            context.Remove(new Actor()
+            {
+                Id = id,
+            });
+
+            await context.SaveChangesAsync();
+            return NoContent();
         }
 
 
