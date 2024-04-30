@@ -89,15 +89,20 @@ namespace PeliculasApi.Controllers
         }
 
         [HttpGet("{id:int}", Name = "obtenerPelicula")]
-        public async Task<ActionResult<PeliculaDTO>> Get(int id)
+        public async Task<ActionResult<PeliculaDetallesDTO>> Get(int id)
         {
-            var pelicula = await context.Peliculas.FirstOrDefaultAsync(x => x.Id == id);
+            var pelicula = await context.Peliculas
+                .Include(pelibd => pelibd.PeliculasActores).ThenInclude(x=> x.Actor)
+                .Include(pelibd => pelibd.PeliculasGeneros).ThenInclude(x=> x.Genero)
+                .FirstOrDefaultAsync(x => x.Id == id);
             if (pelicula == null)
             {
                 return NotFound();
             }
+            pelicula.PeliculasActores = pelicula.PeliculasActores.OrderBy(x => x.Orden).ToList();
 
-            return mapper.Map<PeliculaDTO>(pelicula);
+
+            return mapper.Map<PeliculaDetallesDTO>(pelicula);
         }
 
         [HttpPost]
