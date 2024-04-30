@@ -82,9 +82,8 @@ namespace PeliculasApi.Controllers
                     .Where(pelibd => pelibd.PeliculasGeneros.Select(x => x.GeneroId)
                     .Contains(filtroPeliculasDTO.GeneroId));
                 await HttpContext.InsertarParametrosPaginacion(peliculasQueryable, filtroPeliculasDTO.CantidadResgistrosPorPagina);
-
-                var peliculas = await peliculasQueryable.Paginar(filtroPeliculasDTO.Paginacion).ToListAsync(); 
             }
+            var peliculas = await peliculasQueryable.Paginar(filtroPeliculasDTO.Paginacion).ToListAsync();
             return mapper.Map<List<PeliculaDTO>>(peliculas);
 
         }
