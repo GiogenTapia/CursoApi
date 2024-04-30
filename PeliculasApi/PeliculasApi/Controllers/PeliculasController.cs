@@ -7,6 +7,7 @@ using PeliculasApi.Entidades;
 using PeliculasApi.Helpers;
 using PeliculasApi.Migrations;
 using PeliculasApi.Servicios;
+using System.Linq.Dynamic.Core;
 
 namespace PeliculasApi.Controllers
 {
@@ -17,15 +18,18 @@ namespace PeliculasApi.Controllers
         private readonly ApplicationDbContext context;
         private readonly IMapper mapper;
         private readonly IAlmacenadorArchivos almacenadorArchivos;
+        private readonly ILogger<PeliculasController> logger;
         private readonly string contenedor = "peliculas";
 
         public PeliculasController(ApplicationDbContext context,
             IMapper mapper,
-            IAlmacenadorArchivos almacenadorArchivos)
+            IAlmacenadorArchivos almacenadorArchivos,
+            ILogger<PeliculasController> logger)
         {
             this.context = context;
             this.mapper = mapper;
             this.almacenadorArchivos = almacenadorArchivos;
+            this.logger = logger;
         }
 
         [HttpGet]
@@ -81,8 +85,24 @@ namespace PeliculasApi.Controllers
                 peliculasQueryable = peliculasQueryable
                     .Where(pelibd => pelibd.PeliculasGeneros.Select(x => x.GeneroId)
                     .Contains(filtroPeliculasDTO.GeneroId));
-                await HttpContext.InsertarParametrosPaginacion(peliculasQueryable, filtroPeliculasDTO.CantidadResgistrosPorPagina);
+                
             }
+            if (!string.IsNullOrEmpty(filtroPeliculasDTO.CampoOrdenar))
+            {
+                var tipoOrden = filtroPeliculasDTO.OrdenarAscendente ? "ascending" : "descending";
+
+                try
+                {
+                peliculasQueryable = peliculasQueryable.OrderBy($"{filtroPeliculasDTO.CampoOrdenar} {tipoOrden}");
+
+                }
+                catch (Exception ex)
+                {
+
+                    logger.LogError(ex.Message, ex);
+                }
+            }
+            await HttpContext.InsertarParametrosPaginacion(peliculasQueryable, filtroPeliculasDTO.CantidadResgistrosPorPagina);
             var peliculas = await peliculasQueryable.Paginar(filtroPeliculasDTO.Paginacion).ToListAsync();
             return mapper.Map<List<PeliculaDTO>>(peliculas);
 
